@@ -8,7 +8,7 @@ The `ref` middleware is responsible for handling internal references.
 - processes: element nodes
 - throws on: nothing
 - use as: component or content middleware
-- [docs](http://nx-framework/docs/middlewares/route)
+- [docs](http://nx-framework.com/docs/middlewares/route)
 
 ## Installation
 
