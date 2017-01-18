@@ -3,6 +3,17 @@
 const secret = {
   config: Symbol('ref config')
 }
+const watchedAnchors = new Set()
+
+window.addEventListener('route', onRoute)
+
+function onRoute (ev) {
+  const view = ev.detail.to
+  const level = ev.target.$routerLevel
+  for (let anchor of watchedAnchors) {
+    updateActivity(anchor, view, level)
+  }
+}
 
 updateHistory(pathToRoute(location.pathname), queryToParams(location.search), {history: false})
 
@@ -14,15 +25,23 @@ function ref (elem) {
     elem.$attribute('iref', irefAttribute)
     elem.$attribute('iref-params', irefParamsAttribute)
     elem.$attribute('iref-options', irefOptionsAttribute)
+
+    if (elem.$hasAttribute('iref')) {
+      watchedAnchors.add(elem)
+      elem.$cleanup(unwatch)
+    }
   }
 }
 ref.$name = 'ref'
 ref.$require = ['attributes']
 module.exports = ref
 
+function unwatch () {
+  watchedAnchors.delete(this)
+}
+
 function irefAttribute (path) {
   const config = this[secret.config] = this[secret.config] || {}
-
   let route = pathToRoute(path)
   if (route.some(filterRelativeTokens)) {
     route = relativeToAbsoluteRoute(this, route)
@@ -39,15 +58,25 @@ function irefParamsAttribute (params) {
   this.addEventListener('click', onClick, true)
 }
 
+function irefOptionsAttribute (options) {
+  const config = this[secret.config] = this[secret.config] || {}
+  config.options = options
+}
+
 function onClick (ev) {
   const config = this[secret.config]
   updateHistory(config.route, config.params, config.options)
   ev.preventDefault()
 }
 
-function irefOptionsAttribute (options) {
-  const config = this[secret.config] = this[secret.config] || {}
-  config.options = options
+function updateActivity (anchor, view, level) {
+  const config = anchor[secret.config]
+  level = level - 1
+  if (config.route[level] === view) {
+    anchor.classList.add('active')
+  } else if (config.route[level]) {
+    anchor.classList.remove('active')
+  }
 }
 
 function $route (path, params, options) {
