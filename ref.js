@@ -22,12 +22,12 @@ module.exports = ref
 
 function irefAttribute (path) {
   const config = this[secret.config] = this[secret.config] || {}
-  config.path = path
 
   let route = pathToRoute(path)
   if (route.some(filterRelativeTokens)) {
     route = relativeToAbsoluteRoute(this, route)
   }
+  config.route = route
   this.href = routeToPath(route) + (this.search || '')
   this.addEventListener('click', onClick, true)
 }
@@ -41,10 +41,8 @@ function irefParamsAttribute (params) {
 
 function onClick (ev) {
   const config = this[secret.config]
-  if (config) {
-    this.$route(config.path, config.params, config.options)
-    ev.preventDefault()
-  }
+  updateHistory(config.route, config.params, config.options)
+  ev.preventDefault()
 }
 
 function irefOptionsAttribute (options) {
@@ -53,14 +51,11 @@ function irefOptionsAttribute (options) {
 }
 
 function $route (path, params, options) {
-  params = params || {}
-  options = options || {}
   let route = pathToRoute(path)
   if (route.some(filterRelativeTokens)) {
     route = relativeToAbsoluteRoute(this, route)
   }
   updateHistory(route, params, options)
-  window.scroll(0, 0)
 }
 
 function relativeToAbsoluteRoute (node, relativeRoute) {
@@ -104,6 +99,9 @@ function findParentRouter (node) {
 }
 
 function updateHistory (route, params, options) {
+  params = params || {}
+  options = options || {}
+
   if (options.inherit) {
     params = Object.assign({}, history.state.params, params)
   }
@@ -117,6 +115,7 @@ function updateHistory (route, params, options) {
 
   const eventConfig = {bubbles: true, cancelable: false }
   document.dispatchEvent(new Event('popstate', eventConfig))
+  window.scroll(0, 0)
 }
 
 function routeToPath (route) {
