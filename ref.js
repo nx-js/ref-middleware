@@ -97,11 +97,7 @@ function relativeToAbsoluteRoute (node, relativeRoute) {
     throw new Error('invalid relative route')
   }
 
-  const currentRoute = []
-  while (router) {
-    currentRoute.unshift(router.$currentView)
-    router = findParentRouter(router)
-  }
+  const currentRoute = history.state.route
   const route = relativeRoute.filter(filterAbsoluteTokens)
   return currentRoute.slice(0, routerLevel).concat(route)
 }
