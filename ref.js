@@ -71,7 +71,6 @@ function onClick (ev) {
 
 function updateActivity (anchor, view, level) {
   const config = anchor[secret.config]
-  level = level - 1
   if (config.route[level] === view) {
     anchor.classList.add('active')
   } else if (config.route[level]) {
@@ -89,7 +88,7 @@ function $route (path, params, options) {
 
 function relativeToAbsoluteRoute (node, relativeRoute) {
   let router = findParentRouter(node)
-  let routerLevel = router ? router.$routerLevel : 0
+  let routerLevel = (router ? router.$routerLevel : 0) + 1
 
   for (let token of relativeRoute) {
     if (token === '..') routerLevel--
