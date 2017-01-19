@@ -8,10 +8,12 @@ const watchedAnchors = new Set()
 window.addEventListener('route', onRoute)
 
 function onRoute (ev) {
-  const view = ev.detail.to
-  const level = ev.target.$routerLevel
-  for (let anchor of watchedAnchors) {
-    updateActivity(anchor, view, level)
+  if (!ev.defaultPrevented) {
+    const view = ev.detail.to
+    const level = ev.target.$routerLevel
+    for (let anchor of watchedAnchors) {
+      updateActivity(anchor, view, level)
+    }
   }
 }
 
@@ -47,6 +49,12 @@ function irefAttribute (path) {
     route = relativeToAbsoluteRoute(this, route)
   }
   config.route = route
+  // get router level here ! -> optimize this
+  const parent = findParentRouter(this)
+  const level = parent ? (parent.$routerLevel + 1) : 0
+  const currentRoute = history.state.route
+  updateActivity(this, currentRoute[level], level)
+
   this.href = routeToPath(route) + (this.search || '')
   this.addEventListener('click', onClick, true)
 }
