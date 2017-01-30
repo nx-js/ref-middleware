@@ -4,7 +4,7 @@ const symbols = require('./symbols')
 const anchors = new Set()
 
 window.addEventListener('route', onRoute)
-window.addEventListener('popstate', onPopstate)
+window.addEventListener('params', onParams)
 
 function onRoute (ev) {
   if (!ev.defaultPrevented) {
@@ -14,7 +14,7 @@ function onRoute (ev) {
   }
 }
 
-function onPopstate () {
+function onParams () {
   anchors.forEach(updateParamsMatch)
 }
 
@@ -61,8 +61,10 @@ function updateActivity (anchor) {
   const config = anchor[symbols.config]
   if (config.routeMismatches.size || !config.paramsMatch) {
     anchor.classList.remove('active')
+    config.isActive = false
   } else {
     anchor.classList.add('active')
+    config.isActive = true
   }
 }
 

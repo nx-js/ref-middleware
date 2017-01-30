@@ -64,7 +64,9 @@ function irefOptionsAttribute (options) {
 
 function onAnchorClick (ev) {
   const config = this[symbols.config]
-  updateHistory(config.route, config.params, config.options)
+  if (!config.isActive) {
+    updateHistory(config.route, config.params, config.options)
+  }
   ev.preventDefault()
 }
 
@@ -84,11 +86,8 @@ function updateHistory (route, params, options) {
   }
 
   const url = util.toPath(route) + util.toQuery(params)
-  if (options.history === false) {
-    history.replaceState({route, params}, '', url)
-  } else {
-    history.pushState({route, params}, '', url)
-  }
+  util.updateState({route, params}, '', url, (options.history !== false))
+
   document.dispatchEvent(new Event('popstate', popstateConfig))
   window.scroll(0, 0)
 }
