@@ -85,9 +85,9 @@ function $route (config) {
 }
 
 function updateHistory (config) {
-  const params = config.params || {}
+  const route = config.route || history.state.route
+  let params = config.params || {}
   const options = config.options || {}
-  const route = config.route || []
 
   if (options.inherit) {
     params = Object.assign(history.state.params, params)
