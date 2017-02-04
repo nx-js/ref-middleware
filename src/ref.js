@@ -64,9 +64,7 @@ function irefOptionsAttribute (options) {
 
 function onAnchorClick (ev) {
   const config = this[symbols.config]
-  if (!config.isActive) {
-    updateHistory(config.route, config.params, config.options)
-  }
+  updateHistory(config.route, config.params, config.options)
   ev.preventDefault()
 }
 
