@@ -19,6 +19,9 @@ function onParams () {
 }
 
 function register (anchor) {
+  const config = anchor[symbols.config]
+  config.routeMismatches = new Set()
+  config.paramsMatch = true
   anchors.add(anchor)
 }
 

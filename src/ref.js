@@ -40,12 +40,10 @@ function initAnchor () {
   if (!this[symbols.config]) {
     const parentLevel = dom.findAncestorProp(this, '$routerLevel')
     this[symbols.config] = {
-      level: (parentLevel === undefined) ? 0 : parentLevel + 1,
-      routeMismatches: new Set(),
-      paramsMatch: true
+      level: (parentLevel === undefined) ? 0 : parentLevel + 1
     }
     activity.register(this)
-    this.$cleanup(activity.unregister, this)  
+    this.$cleanup(activity.unregister, this)
   }
 }
 
