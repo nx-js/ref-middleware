@@ -5,12 +5,14 @@ const util = require('@nx-js/router-util')
 const symbols = require('./symbols')
 const activity = require('./activity')
 
-const popstateConfig = { bubbles: true, cancelable: false }
+const popstateConfig = {bubbles: true, cancelable: true}
 
 // init history
-const initialRoute = util.toRoute(location.pathname)
-const initialParams = util.toParams(location.search)
-updateHistory(initialRoute, initialParams, {history: false})
+updateHistory({
+  route: util.toRoute(location.pathname),
+  params: util.toParams(location.search),
+  options: {history: false}
+})
 
 function ref (elem) {
   if (elem.nodeType !== 1) return
@@ -71,21 +73,21 @@ function irefOptionsAttribute (options) {
 }
 
 function onAnchorClick (ev) {
-  const config = this[symbols.config]
-  updateHistory(config.route, config.params, config.options)
+  setTimeout(updateHistory, 0, this[symbols.config])
   ev.preventDefault()
 }
 
-function $route (path, params, options) {
+function $route (config) {
   const parentLevel = dom.findAncestorProp(this, '$routerLevel')
   const level = (parentLevel === undefined) ? 0 : parentLevel + 1
-  const route = util.toAbsolute(util.toRoute(path), level)
-  setTimeout(updateHistory, 0, route, params, options)
+  config.route = util.toAbsolute(util.toRoute(config.to), level)
+  setTimeout(updateHistory, 0, config)
 }
 
-function updateHistory (route, params, options) {
-  params = params || {}
-  options = options || {}
+function updateHistory (config) {
+  const params = config.params || {}
+  const options = config.options || {}
+  const route = config.route || []
 
   if (options.inherit) {
     params = Object.assign(history.state.params, params)
