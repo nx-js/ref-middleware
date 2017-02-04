@@ -17,27 +17,37 @@ function ref (elem) {
 
   elem.$route = $route
   if (elem.tagName === 'A') {
-    elem.$attribute('iref-params', irefParamsAttribute)
-    elem.$attribute('iref-options', irefOptionsAttribute)
-    elem.$attribute('iref', irefAttribute)
-
-    if (elem.$hasAttribute('iref')) {
-      const parentLevel = dom.findAncestorProp(this, '$routerLevel')
-      this[symbols.config] = {
-        level: (parentLevel === undefined) ? 0 : parentLevel + 1,
-        routeMismatches: new Set(),
-        paramsMatch: true
-      }
-      activity.register(elem)
-      elem.$cleanup(activity.unregister, elem)
-    } else if (elem.$hasAttribute('iref-params') || elem.$hasAttribute('iref-options')) {
-      throw new Error ('The iref attribute is mandatory for iref-params and iref-options.')
-    }
+    elem.$attribute('iref-params', {
+      init: initAnchor,
+      handler: irefParamsAttribute
+    })
+    elem.$attribute('iref-options', {
+      init: initAnchor,
+      handler: irefOptionsAttribute
+    })
+    elem.$attribute('iref', {
+      init: initAnchor,
+      handler: irefAttribute,
+      type: ['']
+    })
   }
 }
 ref.$name = 'ref'
 ref.$require = ['attributes']
 module.exports = ref
+
+function initAnchor () {
+  if (!this[symbols.config]) {
+    const parentLevel = dom.findAncestorProp(this, '$routerLevel')
+    this[symbols.config] = {
+      level: (parentLevel === undefined) ? 0 : parentLevel + 1,
+      routeMismatches: new Set(),
+      paramsMatch: true
+    }
+    activity.register(this)
+    this.$cleanup(activity.unregister, this)  
+  }
+}
 
 function irefAttribute (path) {
   const config = this[symbols.config]
