@@ -31,7 +31,7 @@ function ref (elem) {
       activity.register(elem)
       elem.$cleanup(activity.unregister, elem)
     } else if (elem.$hasAttribute('iref-params') || elem.$hasAttribute('iref-options')) {
-      throw new Error ('The iref attribute is mandatory from iref-params and iref-options.')
+      throw new Error ('The iref attribute is mandatory for iref-params and iref-options.')
     }
   }
 }
@@ -74,7 +74,7 @@ function $route (path, params, options) {
   const parentLevel = dom.findAncestorProp(this, '$routerLevel')
   const level = (parentLevel === undefined) ? 0 : parentLevel + 1
   const route = util.toAbsolute(util.toRoute(path), level)
-  updateHistory(route, params, options)
+  setTimeout(updateHistory, 0, route, params, options)
 }
 
 function updateHistory (route, params, options) {
@@ -82,12 +82,10 @@ function updateHistory (route, params, options) {
   options = options || {}
 
   if (options.inherit) {
-    params = Object.assign({}, history.state.params, params)
+    params = Object.assign(history.state.params, params)
   }
-
-  const url = util.toPath(route) + util.toQuery(params)
+  const url = util.toPath(route)
   util.updateState({route, params}, '', url, (options.history !== false))
-
   document.dispatchEvent(new Event('popstate', popstateConfig))
   window.scroll(0, 0)
 }
