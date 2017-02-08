@@ -9,7 +9,7 @@ window.addEventListener('params', onParams)
 function onRoute (ev) {
   if (!ev.defaultPrevented) {
     for (let anchor of anchors) {
-      updateRouteMatch(anchor, ev.detail.to, ev.target.$routerLevel)
+      updateRouteMatch(anchor, ev.detail.to, ev.detail.level)
     }
   }
 }
