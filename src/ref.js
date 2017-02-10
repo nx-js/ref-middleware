@@ -73,15 +73,17 @@ function irefOptionsAttribute (options) {
 }
 
 function onAnchorClick (ev) {
-  setTimeout(updateHistory, 0, this[symbols.config])
+  updateHistory(this[symbols.config])
   ev.preventDefault()
 }
 
 function $route (config) {
-  const parentLevel = dom.findAncestorProp(this, '$routerLevel')
-  const level = (parentLevel === undefined) ? 0 : parentLevel + 1
-  config.route = util.toAbsolute(util.toRoute(config.to), level)
-  setTimeout(updateHistory, 0, config)
+  if (config.to) {
+    const parentLevel = dom.findAncestorProp(this, '$routerLevel')
+    const level = (parentLevel === undefined) ? 0 : parentLevel + 1
+    config.route = util.toAbsolute(util.toRoute(config.to), level)
+  }
+  updateHistory(config)
 }
 
 function updateHistory (config) {
