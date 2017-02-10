@@ -1,6 +1,6 @@
 {
   "name": "@nx-js/ref-middleware",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "An NX middleware, responsibe for handling internal references.",
   "main": "index.js",
   "author": {
@@ -24,9 +24,9 @@
   ],
   "dependecies": {
     "@nx-js/router-util": "^1.0.0",
-    "@nx-js/dom-util": "^1.0.0"
+    "@nx-js/dom-util": "^1.1.0"
   },
   "peerDependencies": {
-    "@nx-js/attributes-middleware": "^1.0.0"
+    "@nx-js/attributes-middleware": "^1.1.0"
   }
 }
